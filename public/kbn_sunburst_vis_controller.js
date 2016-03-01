@@ -41,7 +41,7 @@ define(function (require) {
 	var node, root;
 
     var _buildVis = function (data) {
-    	node = root;
+    	node = root = data;
 		
 		var path = svg.datum(root).selectAll("path")
 			.data(partition.nodes)
