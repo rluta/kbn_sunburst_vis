@@ -14,7 +14,7 @@ define(function (require) {
     return new TemplateVisType({
       name: 'kbn_sunburst',
       title: 'Sunburst Diagram',
-      icon: 'fa-bullseye',
+      icon: 'fa-life-ring',
       description: 'Cool D3 Sunburst',
       template: require('plugins/kbn_sunburst_vis/kbn_sunburst_vis.html'),
       params: {
