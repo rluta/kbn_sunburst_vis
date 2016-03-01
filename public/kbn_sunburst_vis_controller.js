@@ -25,11 +25,7 @@ define(function (require) {
 
   div = d3.select(svgRoot);
 
-  var svg = div.append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g")
-    .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
+
 
 	var partition = d3.layout.partition()
     .value(function(d) { return d.size; });
@@ -41,6 +37,12 @@ define(function (require) {
 		.outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
 
   var _buildVis = function (root) {
+
+    var svg = div.append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
 
     var g = svg.selectAll("g")
       .data(partition.nodes(root))
@@ -56,7 +58,7 @@ define(function (require) {
         .attr("x", function(d) { return y(d.y); })
         .attr("dx", "6") // margin
         .attr("dy", ".35em") // vertical-align
-        .text(function(d) { return d.name; });
+        .text(function(d) { return ( d.name == "flare" ? "" : d.name); });
 
 		function click(d) {
 
