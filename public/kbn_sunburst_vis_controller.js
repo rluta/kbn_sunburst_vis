@@ -7,23 +7,32 @@ define(function (require) {
   var formatNumber = d3.format(',.0f');
 
   module.controller('KbnSunburstVisController', function ($scope, $element, $rootScope, Private) {
-    var sunburstAggResponse = Private(require('./lib/agg_response'));
+  var sunburstAggResponse = Private(require('./lib/agg_response'));
 
-    var svgRoot = $element[0];
-    var margin = 20;
-    var width = 400;
-    var height = 400;
+  var svgRoot = $element[0];
+  var margin = 20;
+  var width = 400;
+  var height = 400;
 
-    var radius = Math.min(width, height) / 2;
+  var radius = Math.min(width, height) / 2;
 
 	var x = d3.scale.linear().range([0, 2 * Math.PI]);
-	var y = d3.scale.sqrt().range([0, radius]);
+	var y = d3.scale.linear().range([0, radius]);
 	var color = d3.scale.category20c();
   var div;
 
+  var node, root;
+
+  div = d3.select(svgRoot);
+
+  var svg = div.append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
+
 	var partition = d3.layout.partition()
-		.sort(null)
-		.value(function(d) { return 1; });
+    .value(function(d) { return d.size; });
 
 	var arc = d3.svg.arc()
 		.startAngle( function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
@@ -31,55 +40,31 @@ define(function (require) {
 		.innerRadius(function(d) { return Math.max(0, y(d.y)); })
 		.outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
 
-	var node, root;
+  var _buildVis = function (root) {
 
-    var _buildVis = function (data) {
-    	node = root = data;
+    var g = svg.selectAll("g")
+      .data(partition.nodes(root))
+      .enter().append("g");
 
-      div = d3.select(svgRoot);
-
-
-    	var svg = div.append("svg")
-    		.attr("width", width)
-    		.attr("height", height)
-    		.append("g")
-    		.attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
-
-
-		var path = svg.datum(root).selectAll("path")
-			.data(partition.nodes)
-			.enter().append("path")
+		var path = g.append("path")
 			.attr("d", arc)
 			.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-			.on("click", click)
-			.each(stash);
+			.on("click", click);
 
-      var text = svg.append("text")
-          .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
-          .attr("x", function(d) { return y(d.y); })
-          .attr("dx", "6") // margin
-          .attr("dy", ".35em") // vertical-align
-          .text(function(d) { return d.name; });
-
-		d3.selectAll("input").on("change", function change() {
-		var value = this.value === "count"
-			? function() { return 1; }
-			: function(d) { return d.size; };
-
-		path.data(partition.value(value).nodes)
-			.transition()
-			.duration(1000)
-			.attrTween("d", arcTweenData);
-		});
+    var text = g.append("text")
+        .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
+        .attr("x", function(d) { return y(d.y); })
+        .attr("dx", "6") // margin
+        .attr("dy", ".35em") // vertical-align
+        .text(function(d) { return d.name; });
 
 		function click(d) {
-  		node = d;
 
       text.transition().attr("opacity", 0);
 
   		path.transition()
-  		  .duration(1000)
-  		  .attrTween("d", arcTweenZoom(d))
+  		  .duration(750)
+  		  .attrTween("d", arcTween(d))
         .each("end", function(e, i) {
           // check if the animated element's data e lies within the visible angle span given in d
           if (e.x >= d.x && e.x < (d.x + d.dx)) {
@@ -108,62 +93,22 @@ define(function (require) {
       	}
     });
 
-	d3.select(self.frameElement).style("height", height + "px");
-
-	// Setup for switching data: stash the old values for transition.
-	function stash(d) {
-	  d.x0 = d.x;
-	  d.dx0 = d.dx;
-	}
-
-	// When switching data: interpolate the arcs in data space.
-	function arcTweenData(a, i) {
-	  var oi = d3.interpolate({x: a.x0, dx: a.dx0}, a);
-	  function tween(t) {
-		var b = oi(t);
-		a.x0 = b.x;
-		a.dx0 = b.dx;
-		return arc(b);
-	  }
-	  if (i == 0) {
-	   // If we are on the first arc, adjust the x domain to match the root node
-	   // at the current zoom level. (We only need to do this once.)
-		var xd = d3.interpolate(x.domain(), [node.x, node.x + node.dx]);
-		return function(t) {
-		  x.domain(xd(t));
-		  return tween(t);
-		};
-	  } else {
-		return tween;
-	  }
-	}
+   d3.select(self.frameElement).style("height", height + "px");
 
   function arcTween(d) {
-  var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
-      yd = d3.interpolate(y.domain(), [d.y, 1]),
-      yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
-  return function(d, i) {
-    return i
-        ? function(t) { return arc(d); }
-        : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
-  };
-}
+    var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+        yd = d3.interpolate(y.domain(), [d.y, 1]),
+        yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+    return function(d, i) {
+      return i
+          ? function(t) { return arc(d); }
+          : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
+    };
+  }
 
   function computeTextRotation(d) {
     return (x(d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
   }
-
-	// When zooming: interpolate the scales.
-	function arcTweenZoom(d) {
-	  var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
-		  yd = d3.interpolate(y.domain(), [d.y, 1]),
-		  yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
-	  return function(d, i) {
-		return i
-			? function(t) { return arc(d); }
-			: function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
-	  };
-	}
 
   });
 });
