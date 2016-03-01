@@ -11,8 +11,8 @@ define(function (require) {
 
   var svgRoot = $element[0];
   var margin = 20;
-  var width = 400;
-  var height = 400;
+  var width = 700;
+  var height = 500;
 
   var radius = Math.min(width, height) / 2;
 
@@ -50,7 +50,7 @@ define(function (require) {
 
 		var path = g.append("path")
 			.attr("d", arc)
-			.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+			.style("fill", function(d) { return color((d.children ? d : d.parent).size); })
 			.on("click", click);
 
     var text = g.append("text")
@@ -59,6 +59,14 @@ define(function (require) {
         .attr("dx", "6") // margin
         .attr("dy", ".35em") // vertical-align
         .text(function(d) { return ( d.name == "flare" ? "" : d.name); });
+
+    var textValue = g.append("text")
+        .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
+        .attr("x", function(d) { return y(d.y); })
+        .attr("dx", "6") // margin
+        .attr("dy", "1.35em") // vertical-align
+        .attr("fill", "darkblue")
+        .text(function(d) { return ( d.name == "flare" ? "" : d.value); });
 
 		function click(d) {
 
