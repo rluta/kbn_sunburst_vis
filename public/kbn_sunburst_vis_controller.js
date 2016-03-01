@@ -3,17 +3,16 @@ define(function (require) {
   var d3 = require('d3');
   var _ = require('lodash');
   var $ = require('jquery');
-  //var S = require('d3-plugins-sankey');
+
   var formatNumber = d3.format(',.0f');
-  //var format = function (d) { return formatNumber(d) + ' TWh';  };
 
   module.controller('KbnSunburstVisController', function ($scope, $element, $rootScope, Private) {
     var sunburstAggResponse = Private(require('./lib/agg_response'));
 
     var svgRoot = $element[0];
     var margin = 20;
-    var width = 500;
-    var height = 500;
+    var width = 400;
+    var height = 400;
 
     var radius = Math.min(width, height) / 2;
 

@@ -15,8 +15,10 @@ define(function (require) {
 
 	if (_.size(b) > 2){
 		temp_node.children = [];
+
 		var a;
-		for ( t=0 ; t < _.size(b); t++){
+
+    for ( t=0 ; t <= _.size(b); t++){
 			if (b[t]) a = b[t];
 		}
 		if (a) {
@@ -55,8 +57,8 @@ define(function (require) {
 
       var chart = {
         'name' :'flare',
-		'children' : nodes,
-		'size' : 0
+    		'children' : nodes,
+    		'size' : 0
       };
 
       return chart;
