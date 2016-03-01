@@ -66,7 +66,7 @@ define(function (require) {
         .attr("dx", "6") // margin
         .attr("dy", "1.35em") // vertical-align
         .attr("fill", "darkblue")
-        .text(function(d) { return ( d.name == "flare" ? "" : d.value); });
+        .text(function(d) { return ( d.name == "flare" ? "" : d.size); });
 
 		function click(d) {
 
