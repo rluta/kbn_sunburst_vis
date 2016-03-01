@@ -50,7 +50,7 @@ define(function (require) {
 
 		var path = g.append("path")
 			.attr("d", arc)
-			.style("fill", function(d) { return color((d.children ? d : d.parent).size); })
+			.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
 			.on("click", click);
 
     var text = g.append("text")
@@ -66,22 +66,23 @@ define(function (require) {
         .attr("dx", "6") // margin
         .attr("dy", "1.35em") // vertical-align
         .attr("fill", "darkblue")
-        .text(function(d) { return ( d.name == "flare" ? "" : d.size); });
+        .text(function(d) { return ( d.name == "flare" ? "" : "(" + d.size + ")"); });
 
 		function click(d) {
 
       text.transition().attr("opacity", 0);
+      textValue.transition().attr("opacity", 0);
 
   		path.transition()
-  		  .duration(750)
+  		  .duration(250)
   		  .attrTween("d", arcTween(d))
         .each("end", function(e, i) {
           // check if the animated element's data e lies within the visible angle span given in d
           if (e.x >= d.x && e.x < (d.x + d.dx)) {
-            // get a selection of the associated text element
-            var arcText = d3.select(this.parentNode).select("text");
+            // get a selection of the associated text element(s)
+            var arcText = d3.select(this.parentNode).selectAll("text");
             // fade in the text element and recalculate positions
-            arcText.transition().duration(750)
+            arcText.transition().duration(250)
               .attr("opacity", 1)
               .attr("transform", function() { return "rotate(" + computeTextRotation(e) + ")" })
               .attr("x", function(d) { return y(d.y); });
