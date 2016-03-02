@@ -19,9 +19,11 @@ define(function (require) {
       template: require('plugins/kbn_sunburst_vis/kbn_sunburst_vis.html'),
       params: {
         defaults: {
+          showText: true,
+          showValues: true,
           showMetricsAtAllLevels: false
         },
-        editor: '<vislib-basic-options></vislib-basic-options>'
+        editor: require('plugins/kbn_sunburst_vis/kbn_sunburst_vis_params.html') /*'<vislib-basic-options></vislib-basic-options>'*/
       },
       hierarchicalData: function (vis) {
         return Boolean(vis.params.showPartialRows || vis.params.showMetricsAtAllLevels);
@@ -40,7 +42,7 @@ define(function (require) {
         {
           group: 'buckets',
           name: 'segment',
-          title: 'Levels',
+          title: 'Ring',
           aggFilter: '!geohash_grid',
           min: 0,
           max: 2

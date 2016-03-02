@@ -53,25 +53,29 @@ define(function (require) {
 			.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
 			.on("click", click);
 
+    if (showText) {
     var text = g.append("text")
         .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
         .attr("x", function(d) { return y(d.y); })
         .attr("dx", "6") // margin
         .attr("dy", ".35em") // vertical-align
         .text(function(d) { return ( d.name == "flare" ? "" : d.name); });
+    }
 
-    var textValue = g.append("text")
-        .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
-        .attr("x", function(d) { return y(d.y); })
-        .attr("dx", "6") // margin
-        .attr("dy", "1.35em") // vertical-align
-        .attr("fill", "darkblue")
-        .text(function(d) { return ( d.name == "flare" ? "" : "(" + d.size + ")"); });
+    if (showValues) {
+      var textValue = g.append("text")
+          .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
+          .attr("x", function(d) { return y(d.y); })
+          .attr("dx", "6") // margin
+          .attr("dy", "1.35em") // vertical-align
+          .attr("fill", "darkblue")
+          .text(function(d) { return ( d.name == "flare" ? "" : "(" + d.size + ")"); });
+    }
 
 		function click(d) {
 
-      text.transition().attr("opacity", 0);
-      textValue.transition().attr("opacity", 0);
+      if (text) text.transition().attr("opacity", 0);
+      if (textValue) textValue.transition().attr("opacity", 0);
 
   		path.transition()
   		  .duration(250)
@@ -82,10 +86,12 @@ define(function (require) {
             // get a selection of the associated text element(s)
             var arcText = d3.select(this.parentNode).selectAll("text");
             // fade in the text element and recalculate positions
-            arcText.transition().duration(250)
-              .attr("opacity", 1)
-              .attr("transform", function() { return "rotate(" + computeTextRotation(e) + ")" })
-              .attr("x", function(d) { return y(d.y); });
+            if (arcText) {
+              arcText.transition().duration(250)
+                .attr("opacity", 1)
+                .attr("transform", function() { return "rotate(" + computeTextRotation(e) + ")" })
+                .attr("x", function(d) { return y(d.y); });
+            }
           }
         });
   		}
