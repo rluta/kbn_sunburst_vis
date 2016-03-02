@@ -6,7 +6,7 @@ This plugin is based on the excelent work done by @chenryn with the
 kbn_sankey_vis [plugin](https://github.com/chenryn/kbn_sankey_vis) (Thanks!), and of course on the exceptional D3 library,
 by @mbostock [D3 Gallery](https://github.com/mbostock/d3/wiki/Gallery) (Also, Thanks!).
 
-![Screenshot](kbn_sunburst_vis.png)
+![Screenshot](sunburst.png)
 
 ##Installation Steps
 
