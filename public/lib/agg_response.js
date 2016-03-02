@@ -8,62 +8,62 @@ define(function (require) {
 
     var nodes = [];
 
-	    var bucket_temp = null;
-	    var bucket_position = 0;
+    var bucket_temp = null;
+    var bucket_position = 0;
 
-	function processEntryRecursive(data, parent) {
+  	function processEntryRecursive(data, parent) {
 
-		bucket_position = 0;
+  		bucket_position = 0;
 
-		for (var t=0; t < _.size(data.buckets); t++) {
-			var bucket = data.buckets[t];
+  		for (var t=0; t < _.size(data.buckets); t++) {
+  			var bucket = data.buckets[t];
 
-			bucket_temp = null;
+  			bucket_temp = null;
 
-			if (!bucket) {
+  			if (!bucket) {
 
 
-				var pos = 0;
-				var found = false;
-				_.each(data.buckets, function(a,b) {
+  				var pos = 0;
+  				var found = false;
+  				_.each(data.buckets, function(a,b) {
 
-					if (!found) {
-						if (bucket_position == pos) {
-						bucket_temp = a;
-						bucket_temp.key = b;
-						bucket_position++;
-						found = true;
-						}
-					}
+  					if (!found) {
+  						if (bucket_position == pos) {
+  						bucket_temp = a;
+  						bucket_temp.key = b;
+  						bucket_position++;
+  						found = true;
+  						}
+  					}
 
-					pos++;
-				});
+  					pos++;
+  				});
 
-				if (bucket_temp) {
-					bucket = bucket_temp;
-				}
-			}
-			var temp_node = { 'children' : null, 'name' : bucket.key, 'size' : bucket.doc_count };
+  				if (bucket_temp) {
+  					bucket = bucket_temp;
+  				}
+  			}
+  			var temp_node = { 'children' : null, 'name' : bucket.key, 'size' : bucket.doc_count };
 
-			// warning ...
+  			// warning ...
 
-			if (_.size(bucket) > 2) {
-				var i = 0;
+  			if (_.size(bucket) > 2) {
+  				var i = 0;
 
-				while(!bucket[i]) { i++; }
+  				while(!bucket[i]) { i++; }
 
-				if (bucket[i].buckets) {
-					// there are more
-					   processEntryRecursive(bucket[i], temp_node);
-				}
-			}
+  				if (bucket[i].buckets) {
+  					// there are more
+  					   processEntryRecursive(bucket[i], temp_node);
+  				}
+  			}
 
-			if (!parent.children) parent.children = [];
+  			if (!parent.children) parent.children = [];
 
-			parent.children.push(temp_node);
-		}
+  			parent.children.push(temp_node);
+  		}
 
-	}
+  	}
 
     return function (vis, resp) {
 

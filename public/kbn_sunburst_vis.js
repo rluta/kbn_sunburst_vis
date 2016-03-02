@@ -45,7 +45,7 @@ define(function (require) {
           title: 'Ring',
           aggFilter: '!geohash_grid',
           min: 0,
-          max: 2
+          max: 5
         }
       ]),
       requiresSearch: true
