@@ -25,8 +25,6 @@ define(function (require) {
 
   div = d3.select(svgRoot);
 
-
-
 	var partition = d3.layout.partition()
     .value(function(d) { return d.size; });
 
@@ -53,7 +51,7 @@ define(function (require) {
 			.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
 			.on("click", click);
 
-    if (showText) {
+    if ($scope.vis.params.showText) {
     var text = g.append("text")
         .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
         .attr("x", function(d) { return y(d.y); })
@@ -62,7 +60,7 @@ define(function (require) {
         .text(function(d) { return ( d.name == "flare" ? "" : d.name); });
     }
 
-    if (showValues) {
+    if ($scope.vis.params.showValues) {
       var textValue = g.append("text")
           .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
           .attr("x", function(d) { return y(d.y); })
