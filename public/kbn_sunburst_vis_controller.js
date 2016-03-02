@@ -98,7 +98,7 @@ define(function (require) {
 
     var _render = function (data) {
     	d3.select(svgRoot).selectAll('svg').remove();
-      	_buildVis(data);
+      	_buildVis(data.children);
     };
 
     $scope.$watch('esResponse', function (resp) {
