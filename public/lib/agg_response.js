@@ -22,7 +22,6 @@ define(function (require) {
 
   			if (!bucket) {
 
-
   				var pos = 0;
   				var found = false;
   				_.each(data.buckets, function(a,b) {
@@ -43,6 +42,7 @@ define(function (require) {
   					bucket = bucket_temp;
   				}
   			}
+        
   			var temp_node = { 'children' : null, 'name' : bucket.key, 'size' : bucket.doc_count };
 
   			// warning ...
@@ -50,9 +50,9 @@ define(function (require) {
   			if (_.size(bucket) > 2) {
   				var i = 0;
 
-  				while(!bucket[i]) { i++; }
+  				while(!bucket[i] && i <= _.size(bucket)) { i++; }
 
-  				if (bucket[i].buckets) {
+  				if (bucket[i] && bucket[i].buckets) {
   					// there are more
   					   processEntryRecursive(bucket[i], temp_node);
   				}
