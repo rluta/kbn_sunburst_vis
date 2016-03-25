@@ -6,6 +6,10 @@ This plugin is based on the excelent work done by @chenryn with the
 kbn_sankey_vis [plugin](https://github.com/chenryn/kbn_sankey_vis) (Thanks!), and of course on the exceptional D3 library,
 by @mbostock [D3 Gallery](https://github.com/mbostock/d3/wiki/Gallery) (Also, Thanks!).
 
+If you really liked this and feel like making a donation : <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=juan.carniglia@gmail.com&lc=AR&item_name=JuanCarniglia&item_number=1001&currency_code=USD&bn=PP-DonationsBF:btn_donate_LG.gif:NonHosted">
+<img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" alt="Contribute!" />
+</a>
+
 ![Screenshot](sunburst.png)
 
 ##Installation Steps
